@@ -5,7 +5,9 @@
 {% block body %}
     <h1>Ingredient index</h1>
 
-    <table class="table">
+     <a href={{path('admin_ingredient_new')}} class="btn btn-success m-4">Create new</a>
+
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Id</th>
@@ -23,8 +25,8 @@
                 <td>{{ ingredient.price }}</td>
                 <td>{{ ingredient.createAt ? ingredient.createAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('admin_ingredient_show', {'id': ingredient.id}) }}">show</a>
-                    <a href="{{ path('admin_ingredient_edit', {'id': ingredient.id}) }}">edit</a>
+                    <a href="{{ path('admin_ingredient_show', {'id': ingredient.id}) }}" class="btn btn-primary" >show</a>
+                    <a href="{{ path('admin_ingredient_edit', {'id': ingredient.id}) }}"  class="btn btn-danger">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -35,5 +37,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('admin_ingredient_new') }}">Create new</a>
+   
 {% endblock %}

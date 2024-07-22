@@ -27,13 +27,14 @@ class IngredientController extends AbstractController
     {
         $ingredient = new Ingredient();
         $form = $this->createForm(IngredientType::class, $ingredient);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($ingredient);
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin_ingredient_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_ingredient_index');
         }
 
         return $this->render('admin/ingredient/new.html.twig', [
@@ -45,6 +46,7 @@ class IngredientController extends AbstractController
     #[Route('show/{id}', name: 'show')]
     public function show(Ingredient $ingredient): Response
     {
+
         return $this->render('admin/ingredient/show.html.twig', [
             'ingredient' => $ingredient,
         ]);
