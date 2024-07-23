@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/ingredient' , 'admin_ingredient_')]
 class IngredientController extends AbstractController
 {
-    #[Route('/', name: 'index')]
+    #[Route('/', name: 'index',methods: ['GET'])]
     public function index(IngredientRepository $ingredientRepository): Response
     {
         return $this->render('admin/ingredient/index.html.twig', [
@@ -22,7 +22,7 @@ class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'new')]
+    #[Route('/new', name: 'new', methods:['GET','POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $ingredient = new Ingredient();
@@ -43,7 +43,7 @@ class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('show/{id}', name: 'show')]
+    #[Route('show/{id}', name: 'show',methods:['GET','POST'])]
     public function show(Ingredient $ingredient): Response
     {
 
@@ -52,7 +52,7 @@ class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'edit')]
+    #[Route('/edit/{id}', name: 'edit',methods:['GET','POST'])]
     public function edit(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(IngredientType::class, $ingredient);
@@ -70,7 +70,7 @@ class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id}', name: 'delete')]
+    #[Route('/delete/{id}', name: 'delete', methods:['DELETE'])]
     public function delete(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->getPayload()->getString('_token'))) {
