@@ -12,61 +12,71 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 
-#[Route('/admin/recette' , 'admin_recette_')]
+
+#[Route('/admin/recette', name: 'admin_recette_')]
 class RecetteController extends AbstractController
 {
-    #[Route('/', name: 'index' , methods: ['GET'])]
-    public function index(RecetteRepository $recette): Response
+    #[Route('/', name: 'index')]
+    public function index(RecetteRepository $repository): Response
     {
-        return $this->render('admin/recette/index.html.twig', [
-            'controller_name' => 'RecetteController', 'recette'=> $recette->findAll()
-        ]);
+        $recipe = $repository->findAll();
+
+        return $this->render('admin/recette/index.html.twig', ['recipes' => $recipe]);
     }
 
-    #[Route('/new' , name: 'new', methods: ['GET','POST'])]
-    public function new(Request $request , EntityManagerInterface $entityManager) : Response
+    #[Route('/new', name: 'new', methods:['post','get'])]
+    public function new(Request $request, EntityManagerInterface $em)
     {
-        $recette = new Recette();
-        $form = $this->createForm(RecetteType::class, $recette);
-        $form->handleRequest($request);
-        
-        if($form->isSubmitted() && $form->isValid()){
-
-            $entityManager->persist($recette);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'La recette a bien été ajoutée');
-
-            return $this->redirectToRoute('admin_recette_index');
-        }
-        return $this->render('admin/recette/new.html.twig' ,['recette' =>$recette ,'form' => $form]);
-    }
-
-
-    #[Route('/edit/{id}' , name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager, Recette $recette) : Response
-    {
-        $form = $this->createForm(RecetteType::class, $recette);
+        $recipe = new Recette();
+        $form = $this->createForm(RecetteType::class, $recipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($recipe);
+            $em->flush();
 
-            $entityManager->flush();
-
-            $this->addFlash('success', 'La recette a bien été modifiée');
+            $this->addFlash('success', 'Recette créé !');
 
             return $this->redirectToRoute('admin_recette_index');
-
         }
-        return $this->render('admin/recette/edit.html.twig', ['form'=>$form]);
+
+        return $this->render('admin/recette/new.html.twig',['recipeForm'=>$form]);
     }
 
+    #[Route('/detail/{id}', name: 'show')]
+    public function show(Recette $recipe)
+    { //paramConverters
 
-    #[Route('/show/{id}' , name: 'show', methods: ['GET, POST'])]
-    public function show() : Response
+        return $this->render('admin/recette/show.html.twig', ['recipe' => $recipe]);
+    }
+
+    #[Route('/edit{id}', name: 'edit')]
+    public function update(Request $request, Recette $recipe, EntityManagerInterface $em): Response
     {
-        return $this->render('admin/recette/show.html.twig');
+        $form = $this->createForm(RecetteType::class, $recipe);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            $this->addFlash('success', 'Recette modifié !');
+
+            return $this->redirectToRoute('admin_recipe_index');
+        }
+
+        return $this->render('admin/recette/edit.html.twig', ['recipeForm' => $form]);
     }
 
-    
+    #[Route('/delete/{id}', name:'delete', methods:'DELETE')]
+    public function delete(Recette $recipe, EntityManagerInterface $em)
+    {
+        $em->remove($recipe);
+        $em->flush();
+
+        $this->addFlash('success', 'Recette supprimé !');
+
+        return $this->redirectToRoute('admin_recette_index');
+    }
+
 }

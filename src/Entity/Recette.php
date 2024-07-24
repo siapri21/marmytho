@@ -3,13 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\RecetteRepository;
+use App\Repository\RecipeRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RecetteRepository::class)]
-#[UniqueEntity('slug')]
+#[ORM\HasLifecycleCallbacks]
 class Recette
 {
     #[ORM\Id]
@@ -17,55 +20,87 @@ class Recette
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max: 50)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:'Le champ {{ label }} ne doit pas être vide')]
+    #[Assert\Length(min:2,max:50,minMessage: 'Le champ {{ label }} doit contenir au moins {{ limit }} caractères')]
     private ?string $name = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max: 50)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:'Le champ {{ label }} ne doit pas être vide')]
+    #[Assert\Length(min:2,max:50,minMessage: 'Le champ {{ label }} doit contenir au moins {{ limit }} caractères')]
     private ?string $slug = null;
 
-    #[ORM\Column(length: 50 , nullable: true)]
-    #[Assert\Range(min: 1 , max: 1440)]
+    #[ORM\Column(nullable: true)]
+    #[Assert\Range(
+        min: 1,
+        max: 1440,
+        notInRangeMessage: 'Le temps doit etre compris entre {{ min }} et {{ max }} minutes',
+    )]
     private ?int $temps = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\LessThan(50)]
-    private ?int $nmbre_person = null;
+    #[ORM\Column(nullable: true)]
+    #[Assert\Range(
+        min: 1,
+        max: 50,
+        notInRangeMessage: 'Le nombre doit etre compris entre {{ min }} et {{ max }}',
+    )]
+    private ?int $personnes = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\Range(min: 1 , max: 5)]
-    private ?int $difficulte = null;
+    #[Assert\NotBlank(message:'Le champ {{ label }} ne doit pas être vide')]
+    #[Assert\Range(
+        min: 1,
+        max: 5,
+        notInRangeMessage: 'Le nombre doit etre compris entre {{ min }} et {{ max }}',
+    )]
+    #[ORM\Column(nullable: true)]
+    private ?int $difficulty = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(message:'Le champ {{ label }} ne doit pas être vide')]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    #[Assert\Range(min: 1 , max: 1000)]
+    #[Assert\NotBlank(message:'Le champ {{ label }} ne doit pas être vide')]
+    #[Assert\Range(
+        min: 1,
+        max: 1000,
+        notInRangeMessage: 'Le nombre doit etre compris entre {{ min }} et {{ max }} euros',
+    )]
+    #[ORM\Column(nullable: true)]
     private ?float $price = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?bool $favorite = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updateAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
-    
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, ingredient>
+     */
+    #[ORM\ManyToMany(targetEntity: ingredient::class)]
+    private Collection $ingredients;
+
+    public function __construct()
+    {
+        $this->ingredients = new ArrayCollection();
+    }
+
+   
+
     #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function setCreateAtValue()
     {
-        $this->createAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
+    #[ORM\PrePersist]
+    public function setUpdateAtValue()
     {
-        $this->updateAt= new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
-
 
     public function getId(): ?int
     {
@@ -108,26 +143,26 @@ class Recette
         return $this;
     }
 
-    public function getNmbrePerson(): ?int
+    public function getPersonnes(): ?int
     {
-        return $this->nmbre_person;
+        return $this->personnes;
     }
 
-    public function setNmbrePerson(int $nmbre_person): static
+    public function setPersonnes(?int $personnes): static
     {
-        $this->nmbre_person = $nmbre_person;
+        $this->personnes = $personnes;
 
         return $this;
     }
 
-    public function getDifficulte(): ?int
+    public function getDifficulty(): ?string
     {
-        return $this->difficulte;
+        return $this->difficulty;
     }
 
-    public function setDifficulte(int $difficulte): static
+    public function setDifficulty(?string $difficulty): static
     {
-        $this->difficulte = $difficulte;
+        $this->difficulty = $difficulty;
 
         return $this;
     }
@@ -137,48 +172,86 @@ class Recette
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): ?int
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(?int $price): static
     {
         $this->price = $price;
 
         return $this;
     }
 
-    public function getCreateAt(): ?\DateTimeImmutable
+    public function isFavorite(): ?bool
     {
-        return $this->createAt;
+        return $this->favorite;
     }
 
-    public function setCreateAt(\DateTimeImmutable $createAt): static
+    public function setFavorite(?bool $favorite): static
     {
-        $this->createAt = $createAt;
+        $this->favorite = $favorite;
 
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->updateAt;
+        return $this->createdAt;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $updateAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->updateAt = $updateAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ingredient>
+     */
+    public function getIngredients(): Collection
+    {
+        return $this->ingredients;
+    }
+
+    public function addIngredient(ingredient $ingredient): static
+    {
+        if (!$this->ingredients->contains($ingredient)) {
+            $this->ingredients->add($ingredient);
+        }
+
+        return $this;
+    }
+
+    public function removeIngredient(ingredient $ingredient): static
+    {
+        $this->ingredients->removeElement($ingredient);
+
+        return $this;
+    }
+
+   
+
+ 
 }
