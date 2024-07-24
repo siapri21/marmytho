@@ -80,7 +80,7 @@ class Recette
     /**
      * @var Collection<int, ingredient>
      */
-    #[ORM\ManyToMany(targetEntity: ingredient::class)]
+    #[ORM\ManyToMany(targetEntity: Ingredient::class)]
     private Collection $ingredients;
 
     public function __construct()
@@ -227,6 +227,10 @@ class Recette
         return $this;
     }
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $fileName = null;
+
+
     /**
      * @return Collection<int, ingredient>
      */
@@ -235,7 +239,7 @@ class Recette
         return $this->ingredients;
     }
 
-    public function addIngredient(ingredient $ingredient): static
+    public function addIngredient(Ingredient $ingredient): static
     {
         if (!$this->ingredients->contains($ingredient)) {
             $this->ingredients->add($ingredient);
@@ -244,9 +248,22 @@ class Recette
         return $this;
     }
 
-    public function removeIngredient(ingredient $ingredient): static
+    public function removeIngredient(Ingredient $ingredient): static
     {
         $this->ingredients->removeElement($ingredient);
+
+        return $this;
+    }
+
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(?string $fileName): static
+    {
+        $this->fileName = $fileName;
 
         return $this;
     }

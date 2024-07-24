@@ -1,12 +1,54 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/recipe.css') }}">
+{% endblock %}
+
 {% block body %}
-	<h1>{{recipe.name}}</h1>
+    <div class="recipe-container">
+        <h1>{{recipe.name}}</h1>
 
-    <p><strong>Description :</strong> {{recipe.description}}</p>
-    <p><strong>Temps de préparation :</strong> {{recipe.temps}}</p>
-    <p><strong>Nombre de personnes :</strong> {{recipe.personnes}}</p>
-    <p><strong>Niveau de difficulté :</strong> {{recipe.difficulty}}</p>
-    <p><strong>Date de création :</strong> {{recipe.createdAt | date("d/m/Y")}}</p>
+        {% if recipe.fileName %}
+            <img src="{{ asset('img/imageFile/' ~ recipe.fileName) }}" alt="Image de {{ recipe.name }}" class="recipe-image">
+        {% else %}
+            <p class="recipe-image" style="text-align: center; line-height: 300px;">Pas d'image disponible</p>
+        {% endif %}
 
+      
+              <table class="table">
+              <tbody>
+               <tr>
+                <th >Description :</th>
+                <td>{{recipe.description}}</td>
+               </tr>
+          
+              <tr>
+                <th>Temps de préparation :</th>
+                <td>{{recipe.temps}}</td>
+              </tr>
+
+                <tr>
+                <th>Nombre de personnes :</th>
+                <td>{{recipe.personnes}}</td>
+                </tr>
+          
+              <tr>
+                <th>Niveau de difficulté :</th>
+                <td>{{recipe.difficulty}}</td>
+              </tr>
+         
+               <tr>
+                <th>Date de création :</th>
+                <td>{{recipe.createdAt | date("d/m/Y")}}</td>
+              
+               </tr>
+              </tbody>
+              </table>
+
+               <a href="{{ path('admin_recette_index') }}" class="btn btn-warning">back to list</a>
+
+             <a href="{{ path('admin_recette_edit', {'id': recipe.id}) }}" class="btn btn-info">edit</a>
+
+          
 {% endblock %}

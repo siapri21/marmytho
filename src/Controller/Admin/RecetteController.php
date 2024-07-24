@@ -32,6 +32,16 @@ class RecetteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('imageFile')->getData();
+
+            if ($file) {
+                $filedir = $this->getParameter('kernel.project_dir') . '/public/img/imageFile';
+                $fileName = $recipe->getSlug() . '.' . $file->getClientOriginalExtension();
+                $file->move($filedir, $fileName);
+                $recipe->setFileName($fileName);
+            }
+
+
             $em->persist($recipe);
             $em->flush();
 
@@ -62,7 +72,7 @@ class RecetteController extends AbstractController
 
             $this->addFlash('success', 'Recette modifié !');
 
-            return $this->redirectToRoute('admin_recipe_index');
+            return $this->redirectToRoute('admin_recette_index');
         }
 
         return $this->render('admin/recette/edit.html.twig', ['recipeForm' => $form]);

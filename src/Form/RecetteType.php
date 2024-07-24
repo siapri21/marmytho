@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -58,13 +59,20 @@ class RecetteType extends AbstractType
             ->add('favorite', CheckboxType::class, [
                 'label' => 'Favori',
                 'required' => false,
-            ])
+                ])
+                
+                ->add('imageFile', FileType::class, [
+                    'label' => 'Image',
+                    'required' => false,
+                    'mapped' => false,
+                ])
             ->add('ingredients', EntityType::class, [
                 'class' => Ingredient::class,
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true,
             ])
+            
             ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoSlug(...)) // ... declarer al fonction sans l'éxecuter
         ;
     }
