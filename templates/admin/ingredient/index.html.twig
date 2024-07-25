@@ -7,11 +7,11 @@
 
      <a href={{path('admin_ingredient_new')}} class="btn btn-success m-4">Create new</a>
 
-    <table class="table table-striped">
+    <table class="table table-striped-columns">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
+               
+                <th> Ingredient</th>
                 <th>Price</th>
                 <th>CreateAt</th>
                 <th>actions</th>
@@ -20,7 +20,6 @@
         <tbody>
         {% for ingredient in ingredients %}
             <tr>
-                <td>{{ ingredient.id }}</td>
                 <td>{{ ingredient.name }}</td>
                 <td>{{ ingredient.price }}</td>
                 <td>{{ ingredient.createAt ? ingredient.createAt|date('Y-m-d H:i:s') : '' }}</td>

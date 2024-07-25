@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\RecetteRepository;
-use App\Repository\RecipeRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -88,7 +87,6 @@ class Recette
         $this->ingredients = new ArrayCollection();
     }
 
-   
 
     #[ORM\PrePersist]
     public function setCreateAtValue()

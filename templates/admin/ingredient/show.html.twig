@@ -1,3 +1,4 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Ingredient{% endblock %}
@@ -8,11 +9,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ ingredient.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
+                <th>Ingredient</th>
                 <td>{{ ingredient.name }}</td>
             </tr>
             <tr>
@@ -28,7 +25,7 @@
 
     <a href="{{ path('admin_ingredient_index') }}" class="btn btn-warning">back to list</a>
 
-    <a href="{{ path('admin_ingredient_edit', {'id': ingredient.id}) }}" class="btn btn-info">edit</a>
+    <a href="{{ path('admin_ingredient_edit', {'slug': ingredient.slug}) }}" class="btn btn-info">edit</a>
 
     {# {{ include('admin/ingredient/delete_form.html.twig') }} #}
 {% endblock %}

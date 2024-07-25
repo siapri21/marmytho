@@ -33,6 +33,12 @@ class Ingredient
     #[Assert\LessThanOrEqual(200)]
     private ?float $price = null;
 
+    
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:'Le champ {{ label }} ne doit pas être vide')]
+    #[Assert\Length(min:2,max:50,minMessage: 'Le champ {{ label }} doit contenir au moins {{ limit }} caractères')]
+    private ?string $slug = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createAt = null;
 
@@ -68,6 +74,18 @@ class Ingredient
     public function setPrice(string $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

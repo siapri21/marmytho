@@ -53,14 +53,14 @@ class RecetteController extends AbstractController
         return $this->render('admin/recette/new.html.twig',['recipeForm'=>$form]);
     }
 
-    #[Route('/detail/{id}', name: 'show')]
+    #[Route('/detail/{slug}', name: 'show')]
     public function show(Recette $recipe)
     { //paramConverters
 
         return $this->render('admin/recette/show.html.twig', ['recipe' => $recipe]);
     }
 
-    #[Route('/edit{id}', name: 'edit')]
+    #[Route('/edit{slug}', name: 'edit')]
     public function update(Request $request, Recette $recipe, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(RecetteType::class, $recipe);
@@ -78,7 +78,7 @@ class RecetteController extends AbstractController
         return $this->render('admin/recette/edit.html.twig', ['recipeForm' => $form]);
     }
 
-    #[Route('/delete/{id}', name:'delete', methods:'DELETE')]
+    #[Route('/delete/{slug}', name:'delete', methods:'DELETE')]
     public function delete(Recette $recipe, EntityManagerInterface $em)
     {
         $em->remove($recipe);

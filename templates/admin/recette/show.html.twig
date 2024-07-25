@@ -48,7 +48,7 @@
 
                <a href="{{ path('admin_recette_index') }}" class="btn btn-warning">back to list</a>
 
-             <a href="{{ path('admin_recette_edit', {'id': recipe.id}) }}" class="btn btn-info">edit</a>
+             <a href="{{ path('admin_recette_edit', {'slug': recipe.slug}) }}" class="btn btn-info">edit</a>
 
           
 {% endblock %}

@@ -8,8 +8,8 @@
     {{ form_start(recipeForm) }}
         {{ form_rest(recipeForm) }}
         
-        <button class="btn">Save</button>
+        <button class="btn btn-info">Save</button>
     {{ form_end(recipeForm) }}
 
-    <a href="{{ path('admin_recette_index') }}">back to list</a>
+    <a href="{{ path('admin_recette_index') }}" class="btn btn-warning">back to list</a>
 {% endblock %}
