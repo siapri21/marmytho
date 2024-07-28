@@ -1,9 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Marmytho - Accueil{% endblock %}
 
 {% block body %}
-<h1>bienvenue chez Marmytho</h1>
+<main class="container">
+    <div>
+        <h1 class="display-5 fw-bold mb-4">Marmytho</h1>
+        <p class="fs-4">"Bienvenue sur Marmytho, où chaque plat est un chef-d'œuvre... selon les légendes !"</p>
+    </div>
 
-
+    <div class="container mt-5">
+        <h1 class="mb-4">Our Recipes</h1>
+        <div class="row">
+            {% for recipe in recipes %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        {% if recipe.fileName %}
+                            <img src="{{ asset('img/imageFile/' ~ recipe.fileName) }}" class="card-img-top" alt="{{ recipe.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ recipe.name }}</h5>
+                            <p class="card-text">{{ recipe.description|length > 100 ? recipe.description|slice(0, 100) ~ '...' : recipe.description }}</p>
+                            <a href="{{ path('admin_recette_show', {'slug': recipe.slug}) }}" class="btn btn-primary">View Recipe</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            {% if recipe.temps %}Time: {{ recipe.temps}} mins{% endif %}
+                            {% if recipe.personnes %}| Serves: {{ recipe.personnes }}{% endif %}
+                            {% if recipe.difficulty %}| Difficulty: {{ recipe.difficulty }}{% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
 {% endblock %}

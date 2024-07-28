@@ -20,12 +20,12 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: admin_home_index
+                default_target_path: home_index
                 
             logout:
                 path: app_logout
                 # where to redirect after logout
-                target: app_any_route
+                target: home_index
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
